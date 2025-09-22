@@ -133,7 +133,6 @@ if(a < b) // This may not behave as expected because -1 is converted to large un
 
 In C, the size of basic data types can depend on the **compiler** and **system architecture**, but the **typical sizes** on modern systems are as follows:
 
----
 
 ### **1. `char`**
 
@@ -162,7 +161,6 @@ In C, the size of basic data types can depend on the **compiler** and **system a
 * **Size:** 8 bytes on both 32-bit and 64-bit systems.
 * **Example:** `double e = 2.718281828;`
 
----
 
 ### **Summary Table**
 
@@ -173,7 +171,6 @@ In C, the size of basic data types can depend on the **compiler** and **system a
 | `float`   | 4 bytes       | 4 bytes       | Single-precision decimals      |
 | `double`  | 8 bytes       | 8 bytes       | Double-precision decimals      |
 
----
 
 **Extra Notes for Interview:**
 
@@ -186,7 +183,66 @@ In C, the size of basic data types can depend on the **compiler** and **system a
 3. Always specify **exact-width types** if needed for portability (`stdint.h` types like `int32_t`, `uint64_t`).
 
 ---
+
 4. What is the difference between `float` and `double`?
+
+In C, both `float` and `double` are **floating-point data types** used to store numbers with decimals, but they differ in **precision, size, and usage**.
+
+### **1. Size**
+
+| Data Type | Typical Size |
+| --------- | ------------ |
+| `float`   | 4 bytes      |
+| `double`  | 8 bytes      |
+
+* `double` uses **twice the memory** of `float`.
+
+
+### **2. Precision**
+
+* **`float`** → Single precision, typically **7 decimal digits of precision**.
+* **`double`** → Double precision, typically **15–16 decimal digits of precision**.
+
+**Example:**
+
+```c
+float f = 3.14159265;   // precision up to ~7 digits
+double d = 3.141592653589793; // precision up to ~15 digits
+```
+
+
+### **3. Range**
+
+* `double` can represent **much larger and much smaller numbers** than `float`.
+* Typical ranges:
+
+  * `float`: \~1.2E-38 to 3.4E+38
+  * `double`: \~2.2E-308 to 1.7E+308
+
+
+### **4. Usage**
+
+* **`float`**: Use when memory is limited and high precision is not required. Example: graphics, simple calculations.
+* **`double`**: Use when high precision is required, e.g., scientific calculations, financial applications.
+
+
+### **5. Summary Table**
+
+| Feature      | `float`                   | `double`                    |
+| ------------ | ------------------------- | --------------------------- |
+| Size         | 4 bytes                   | 8 bytes                     |
+| Precision    | \~7 digits                | \~15–16 digits              |
+| Range        | Smaller                   | Larger                      |
+| Memory Usage | Less                      | More                        |
+| Use Case     | Less precise calculations | High precision calculations |
+
+**Extra Notes for Interview:**
+
+* `float` calculations may introduce rounding errors due to lower precision.
+* By default, floating-point literals like `3.14` are considered `double`. If you want `float`, use `3.14f`.
+
+---
+
 5. What is the purpose of `void` data type in C?
 6. How many bits are there in a `char`? Can it be negative?
 7. What is the range of `unsigned short int` and `signed short int`?
