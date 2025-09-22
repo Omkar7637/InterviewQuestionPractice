@@ -68,6 +68,67 @@ In C, data types define the type of data a variable can hold. Understanding them
 ---
 
 2. What is the difference between **signed** and **unsigned** data types?
+
+In C, **signed** and **unsigned** are qualifiers used with integer types to define whether the variable can hold negative values or only non-negative values. The key differences are:
+
+1. **Signed Data Types:**
+
+   * Can store both **positive and negative numbers**.
+   * Most common signed types: `int`, `short`, `long`.
+   * By default, `int` is **signed** if no qualifier is mentioned.
+   * Memory representation uses **two’s complement** for negative numbers.
+   * **Example:**
+
+     ```c
+     signed int a = -10;
+     int b = 20; // signed by default
+     ```
+   * Range example (for 4-byte `int`):
+
+     ```
+     -2,147,483,648 to 2,147,483,647
+     ```
+
+2. **Unsigned Data Types:**
+
+   * Can store **only non-negative numbers** (0 and positive numbers).
+   * Useful when you know values will never be negative, e.g., counting items, array indices.
+   * **Example:**
+
+     ```c
+     unsigned int count = 300;
+     ```
+   * Range example (for 4-byte `unsigned int`):
+
+     ```
+     0 to 4,294,967,295
+     ```
+
+3. **Key Differences:**
+
+| Feature               | Signed                   | Unsigned                |
+| --------------------- | ------------------------ | ----------------------- |
+| Range                 | Negative and positive    | Only positive & zero    |
+| Default               | Default for `int`        | Must explicitly declare |
+| Usage                 | General-purpose integers | Counters, memory sizes  |
+| Memory Representation | Two’s complement         | Straight binary         |
+
+**Important Note for Interviews:**
+
+* Using `unsigned` can **double the maximum positive range** compared to signed of the same size.
+* Be careful when mixing signed and unsigned in arithmetic or comparisons; it may lead to **unexpected behavior** due to type conversion.
+
+**Example of caution:**
+
+```c
+int a = -1;
+unsigned int b = 1;
+if(a < b) // This may not behave as expected because -1 is converted to large unsigned value
+    printf("True\n");
+```
+
+---
+
 3. What is the size of `int`, `char`, `float`, and `double` in C on a **32-bit** and **64-bit** system?
 4. What is the difference between `float` and `double`?
 5. What is the purpose of `void` data type in C?
