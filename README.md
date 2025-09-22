@@ -130,6 +130,62 @@ if(a < b) // This may not behave as expected because -1 is converted to large un
 ---
 
 3. What is the size of `int`, `char`, `float`, and `double` in C on a **32-bit** and **64-bit** system?
+
+In C, the size of basic data types can depend on the **compiler** and **system architecture**, but the **typical sizes** on modern systems are as follows:
+
+---
+
+### **1. `char`**
+
+* Stores a single character.
+* **Size:** 1 byte on both 32-bit and 64-bit systems.
+* **Example:** `char c = 'A';`
+
+### **2. `int`**
+
+* Stores whole numbers.
+* **Typical Size:**
+
+  * **32-bit system:** 4 bytes
+  * **64-bit system:** 4 bytes (most compilers still use 4 bytes for `int`)
+* **Example:** `int x = 100;`
+
+### **3. `float`**
+
+* Stores single-precision floating-point numbers.
+* **Size:** 4 bytes on both 32-bit and 64-bit systems.
+* **Example:** `float pi = 3.14;`
+
+### **4. `double`**
+
+* Stores double-precision floating-point numbers.
+* **Size:** 8 bytes on both 32-bit and 64-bit systems.
+* **Example:** `double e = 2.718281828;`
+
+---
+
+### **Summary Table**
+
+| Data Type | 32-bit System | 64-bit System | Notes                          |
+| --------- | ------------- | ------------- | ------------------------------ |
+| `char`    | 1 byte        | 1 byte        | Stores character, ASCII values |
+| `int`     | 4 bytes       | 4 bytes       | Whole numbers                  |
+| `float`   | 4 bytes       | 4 bytes       | Single-precision decimals      |
+| `double`  | 8 bytes       | 8 bytes       | Double-precision decimals      |
+
+---
+
+**Extra Notes for Interview:**
+
+1. `sizeof()` operator in C can be used to check the size of any type at runtime:
+
+   ```c
+   printf("Size of int: %zu\n", sizeof(int));
+   ```
+2. `long` and `long long` sizes **may differ** between 32-bit and 64-bit systems.
+3. Always specify **exact-width types** if needed for portability (`stdint.h` types like `int32_t`, `uint64_t`).
+
+---
 4. What is the difference between `float` and `double`?
 5. What is the purpose of `void` data type in C?
 6. How many bits are there in a `char`? Can it be negative?
