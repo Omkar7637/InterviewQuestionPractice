@@ -244,32 +244,442 @@ double d = 3.141592653589793; // precision up to ~15 digits
 ---
 
 5. What is the purpose of `void` data type in C?
+
+In C, the `void` data type represents **“no data”** or **absence of a value**. It is mainly used in three contexts:
+
+**1. Functions that do not return a value**
+
+* When a function does not return anything, we declare its return type as `void`.
+* Example:
+
+```c
+void printMessage() {
+    printf("Hello, World!\n");
+}
+```
+
+* Here, `printMessage` performs an action but does not return any value.
+
+**2. Functions with no parameters**
+
+* `void` can indicate that a function takes **no arguments**.
+* Example:
+
+```c
+int getRandomNumber(void) {
+    return 42;
+}
+```
+
+* The `void` in the parameter list makes it explicit that the function takes no inputs.
+
+**3. Void pointers (`void *`)**
+
+* `void *` is a **generic pointer type** that can point to any data type.
+* Useful in dynamic memory allocation or generic data structures.
+* Example:
+
+```c
+void *ptr;
+int x = 10;
+ptr = &x;  // ptr can point to int, char, float, etc.
+```
+
+**Extra Notes for Interview:**
+
+* `void` itself **cannot store data**, so you cannot declare a variable of type `void`.
+* It is mainly a **placeholder** to indicate absence of value or type flexibility.
+
+This shows your understanding of **functions, parameters, and pointers**, which is often expected in interviews.
+
+---
+
 6. How many bits are there in a `char`? Can it be negative?
+
+In C, a `char` is used to store a single character, but internally it is represented as a small integer.
+
+**1. Number of bits in a `char`**
+
+* A `char` typically occupies **1 byte**.
+* Since 1 byte = 8 bits, a `char` has **8 bits** on most systems.
+* The C standard guarantees that `sizeof(char)` is always 1, but the **number of bits in a byte may vary on rare architectures**, though 8 bits is almost universal today.
+
+**2. Can a `char` be negative?**
+
+* Yes, a `char` can be **signed or unsigned** depending on the compiler.
+* **Signed `char`** can hold negative values (typically -128 to 127 for 8 bits).
+* **Unsigned `char`** can hold only non-negative values (0 to 255 for 8 bits).
+* Example:
+
+```c
+signed char a = -50;
+unsigned char b = 200;
+```
+
+**Extra Notes for Interview:**
+
+* By default, whether `char` is signed or unsigned is **implementation-defined**, so it’s good practice to explicitly use `signed char` or `unsigned char` if negative values are needed.
+* Even though `char` stores characters, it behaves as an integer type when used in arithmetic operations.
+
+This answer shows knowledge of **data representation, signed/unsigned behavior, and practical usage**—all points interviewers often check.
+
+---
+
 7. What is the range of `unsigned short int` and `signed short int`?
+
+In C, `short int` is a **short integer type** used to save memory compared to `int`. Its size is typically **2 bytes (16 bits)** on most systems. The range depends on whether it is **signed** or **unsigned**.
+
+**1. Signed short int**
+
+* Uses 1 bit for the sign (positive or negative) and 15 bits for the value.
+* Typical range for 16-bit signed short:
+
+```
+-32,768 to 32,767
+```
+
+* Example:
+
+```c
+signed short int a = -30000;
+```
+
+**2. Unsigned short int**
+
+* All 16 bits are used for storing the value (no negative numbers).
+* Typical range for 16-bit unsigned short:
+
+```
+0 to 65,535
+```
+
+* Example:
+
+```c
+unsigned short int b = 50000;
+```
+
+**Extra Notes for Interview:**
+
+* `short int` is often used when memory optimization is needed.
+* Using `unsigned` doubles the maximum positive value compared to signed of the same size.
+* The exact range can vary if the compiler or system uses a different size, but **16 bits is the standard** for most modern systems.
+
+This answer demonstrates understanding of **bit allocation, signed vs unsigned, and practical memory considerations**.
+
+---
+
 8. Why is the size of data types machine-dependent?
+
+In C, the size of basic data types like `int`, `float`, or `double` is **not strictly fixed by the language standard**. Instead, it depends on the **architecture of the machine** and the **compiler implementation**. The reasons are:
+
+**1. Processor Architecture**
+
+* Different processors have different **word sizes** (the natural unit of data for the CPU).
+* Example:
+
+  * A **32-bit processor** has a 32-bit word, so it may allocate 4 bytes for `int`.
+  * A **64-bit processor** has a 64-bit word, so it may allocate 8 bytes for `int`.
+* Memory access is more efficient when data types align with the CPU’s word size.
+
+**2. Compiler Implementation**
+
+* The C standard specifies **minimum ranges** for data types, not exact sizes.
+* Compilers can choose sizes that optimize **performance, memory usage, or alignment** for the target system.
+
+**3. Memory Alignment and Efficiency**
+
+* CPUs are faster when data is **aligned to word boundaries**.
+* Sometimes compilers adjust sizes to ensure **proper alignment**, which can vary between machines.
+
+**4. Portability Consideration**
+
+* Because of machine-dependent sizes, C provides **fixed-width types** in `stdint.h` like `int8_t`, `int16_t`, `int32_t`, which have the **same size on all platforms**.
+
+**Extra Notes for Interview:**
+
+* Use `sizeof()` to check the size of a type on a particular system:
+
+```c
+printf("Size of int: %zu bytes\n", sizeof(int));
+```
+
+* Being aware of machine-dependent sizes is important for **embedded systems, memory-critical applications, and cross-platform programming**.
+
+This answer shows understanding of **architecture, compiler behavior, and portability considerations**—topics interviewers often test.
+
+---
+
 9. What happens when you store a negative number in an unsigned variable?
+
+In C, an **unsigned variable** can store only **non-negative numbers** (0 and positive values). If you try to assign a **negative number** to an unsigned variable, it does **not store the negative value as-is**. Instead, **integer conversion rules** apply:
+
+**1. Conversion Using Modulo**
+
+* The negative number is converted using **modulo arithmetic** based on the maximum value the unsigned type can hold.
+* Formula:
+
+```
+Stored Value = (Negative Value) + (Maximum Value of Type + 1)
+```
+
+**2. Example**
+
+```c
+unsigned int x;
+x = -1;
+printf("%u\n", x);
+```
+
+* For a 32-bit `unsigned int`, the maximum value is `2^32 - 1 = 4294967295`.
+* So, `-1` is stored as:
+
+```
+-1 + 2^32 = 4294967295
+```
+
+* The output of the program will be `4294967295`.
+
+**3. Important Notes**
+
+* Assigning negative values to unsigned types can lead to **unexpected results**.
+* Arithmetic with unsigned variables follows **modular arithmetic**, so overflow or negative assignments wrap around.
+* This behavior is defined by the C standard (ISO C) and is **implementation-independent**, so it is predictable but must be used carefully.
+
+**Extra Notes for Interview:**
+
+* Avoid assigning negative values to unsigned variables unless you intentionally want **wrap-around behavior**.
+* Be cautious when mixing signed and unsigned types in comparisons or calculations, as implicit conversions can cause **logic errors**.
+
+This demonstrates understanding of **type conversion, integer representation, and modular arithmetic**, which interviewers often expect.
+
+
+---
+
 10. What is the difference between **typedef** and **#define** for declaring data types?
 
+In C, both `typedef` and `#define` can be used to create aliases for types, but they work **very differently** and have different use cases.
+
+**1. `typedef`**
+
+* `typedef` is a **keyword** in C used to create a new name (alias) for an existing data type.
+* It is **handled by the compiler**, so it follows **type rules**.
+* Example:
+
+```c
+typedef unsigned int uint;
+uint age = 25;  // same as unsigned int age = 25;
+```
+
+* Advantages:
+
+  * Provides **type safety** because it is recognized by the compiler as a type.
+  * Can be used to simplify complex declarations like pointers or structures:
+
+```c
+typedef struct {
+    int x;
+    int y;
+} Point;
+
+Point p1; // instead of struct Point p1;
+```
+
+**2. `#define`**
+
+* `#define` is a **preprocessor directive** used to define **macros**.
+* It performs a **textual replacement** before compilation, not type checking.
+* Example:
+
+```c
+#define uint unsigned int
+uint age = 25; // preprocessor replaces uint with unsigned int
+```
+
+* Limitations:
+
+  * No type checking by the compiler.
+  * Can lead to unexpected behavior if used carelessly with complex types.
+
+**3. Key Differences**
+
+| Feature              | `typedef`                        | `#define`                           |
+| -------------------- | -------------------------------- | ----------------------------------- |
+| Type Checking        | Yes, compiler recognizes type    | No, textual substitution only       |
+| Scope                | Follows C scope rules            | Global, replaces text everywhere    |
+| Complex Declarations | Handles pointers, structs easily | Can be confusing with complex types |
+| Debugging            | Easier to debug                  | Harder to debug                     |
+
+**Extra Notes for Interview:**
+
+* Prefer `typedef` for creating type aliases because it is safer and integrates with the compiler.
+* `#define` is more suitable for **constants or macros**, not for type definitions.
+
+This answer shows understanding of **compiler vs preprocessor behavior, type safety, and practical coding practices**, which interviewers often test.
+
+
+---
 ---
 
 ### 🟡 Intermediate (Tricky + Coding Based)
 
 11. Predict the output:
 
+**Question:** Predict the output:
+
 ```c
 unsigned int x = -1;
 printf("%u\n", x);
 ```
 
-12. If `char` is 1 byte, what will be the output of:
+**Answer:**
+
+In C, `unsigned int` can store only **non-negative numbers** (0 and positive). When you assign a **negative value** to an unsigned variable, **integer conversion rules** apply:
+
+**1. Conversion Rule**
+
+* The negative number is converted using **modular arithmetic** based on the maximum value of the unsigned type.
+* For an `unsigned int` on a typical 32-bit system, the maximum value is `2^32 - 1 = 4294967295`.
+* Formula:
+
+```
+Stored Value = Negative Value + (Maximum Value + 1)
+```
+
+**2. Calculation**
+
+```c
+x = -1;
+Stored Value = -1 + (2^32) = 4294967295
+```
+
+**3. Output**
+
+* The `%u` format specifier prints the **unsigned value**, so the output will be:
+
+```
+4294967295
+```
+
+**4. Important Notes for Interview:**
+
+* Assigning negative numbers to unsigned variables can lead to **unexpected results**, so be cautious.
+* This demonstrates understanding of **type conversion, modular arithmetic, and how signed and unsigned types interact**.
+
+This answer shows your grasp of **integer representation and C type behavior**, which interviewers often look for.
+
+---
+
+12. **Question:** If `char` is 1 byte, what will be the output of:
 
 ```c
 char c = 255;
 printf("%d\n", c);
 ```
 
-13. Difference between `size_t` and `int`. Why do we use `size_t` in embedded systems?
-14. What is the output?
+**Answer:**
+
+In C, a `char` typically occupies **1 byte (8 bits)** and can be either **signed** or **unsigned**, depending on the compiler.
+
+**1. Understanding the Assignment**
+
+* `255` in binary (8 bits) is `11111111`.
+* If `char` is **signed**, the range is `-128 to 127`.
+* Assigning `255` to a signed `char` causes **integer overflow**, because `255` exceeds the maximum signed value `127`.
+
+**2. Two’s Complement Representation**
+
+* In signed 8-bit representation, `11111111` corresponds to `-1`.
+* So, storing `255` in a signed `char` wraps around to `-1`.
+
+**3. printf Behavior**
+
+* `%d` expects an `int`. The `char` value is **promoted to int**.
+* If `char` is signed, `c` becomes `-1` when promoted.
+* Output:
+
+```
+-1
+```
+
+**4. If `char` is unsigned**
+
+* Range would be `0 to 255`.
+* Assigning `255` is valid.
+* `%d` still promotes to `int`, but the value is `255`.
+* Output in that case:
+
+```
+255
+```
+
+**Extra Notes for Interview:**
+
+* By default, whether `char` is signed or unsigned is **implementation-dependent**.
+* To avoid ambiguity, you can use `signed char` or `unsigned char` explicitly.
+* This question tests understanding of **data types, overflow, and type promotion**.
+
+
+---
+
+13. **Question:** Difference between `size_t` and `int`. Why do we use `size_t` in embedded systems?
+
+**Answer:**
+
+**1. `int`**
+
+* A standard integer type in C used to store whole numbers.
+* Can be **signed**, so it stores both negative and positive values.
+* Size depends on the system and compiler (commonly 4 bytes on 32-bit and 64-bit systems).
+* Example:
+
+```c
+int a = -10;
+```
+
+**2. `size_t`**
+
+* An **unsigned integer type** defined in `<stddef.h>` or `<stdio.h>`.
+* Used specifically to represent **sizes of objects in memory** (like the return value of `sizeof`).
+* Size is **platform-dependent**, large enough to store the size of the largest possible object.
+* Example:
+
+```c
+size_t n = sizeof(int);
+```
+
+**3. Key Differences**
+
+| Feature    | `int`                    | `size_t`                                       |
+| ---------- | ------------------------ | ---------------------------------------------- |
+| Signedness | Signed (can be negative) | Unsigned (non-negative only)                   |
+| Purpose    | General integer storage  | Represent memory sizes, array indices, lengths |
+| Range      | Negative to positive     | 0 to max possible object size                  |
+| Header     | Built-in type            | `<stddef.h>` or `<stdio.h>`                    |
+
+**4. Why `size_t` is used in embedded systems**
+
+* Embedded systems often deal with **memory management and buffer sizes**.
+* `size_t` ensures **non-negative values** and **correct representation of large memory sizes**.
+* Helps prevent **overflow or undefined behavior** when calculating sizes.
+* Example in embedded code:
+
+```c
+uint8_t buffer[256];
+size_t len = sizeof(buffer); // safe, correct type for size
+```
+
+**Extra Notes for Interview:**
+
+* Always use `size_t` when working with `sizeof`, memory allocation (`malloc`), or array indexing.
+* Using `int` for sizes can be dangerous if the size exceeds the positive range of `int`.
+
+This answer shows understanding of **type safety, memory representation, and best practices in embedded systems**.
+
+
+---
+
+14. **Question:** What is the output?
 
 ```c
 int a = 300;
@@ -277,9 +687,164 @@ char b = a;
 printf("%d\n", b);
 ```
 
-15. What is the difference between **volatile** and normal data type?
-16. Why should we be careful while using `float` in embedded systems?
+**Answer:**
+
+In C, `char` typically occupies **1 byte (8 bits)**, while `int` is usually **4 bytes (32 bits)**. Assigning an `int` to a `char` can cause **data truncation** because only the **lowest 8 bits** of the integer are stored in the `char`.
+
+**1. Understanding the Assignment**
+
+* `a = 300` in binary (32-bit representation) is:
+
+```
+00000000 00000000 00000001 00101100
+```
+
+* Only the **lowest 8 bits** (`00101100`) are stored in `b`.
+
+**2. Binary to Decimal Conversion**
+
+* `00101100` in decimal = 44.
+* However, if `char` is **signed**, the range is `-128 to 127`.
+* 44 is within the signed range, so no wrap-around occurs.
+
+**3. Output**
+
+```
+44
+```
+
+**4. Extra Notes for Interview:**
+
+* If the value had exceeded 127 in a signed `char`, it would wrap around using **two’s complement**, potentially producing a negative number.
+* This demonstrates understanding of **type conversion, data truncation, and signed/unsigned behavior**.
+
+**Example with a larger number:**
+
+```c
+int a = 130;
+char b = a;  // signed char
+printf("%d\n", b); // Output: -126 (wrap-around occurs)
+```
+
+This shows knowledge of **memory size, type casting, and integer overflow in C**—all topics interviewers often test.
+
+
+---
+
+
+15. **Question:** What is the difference between `volatile` and normal data type?
+
+**Answer:**
+
+In C, the `volatile` keyword is a **type qualifier** that tells the compiler that a variable’s value **can change at any time outside the program flow**, so it should **not optimize or cache** the variable.
+
+**1. Normal Data Type**
+
+* The compiler assumes the value of a normal variable **does not change unexpectedly**.
+* It may **optimize by storing the value in a register** or removing repeated reads.
+* Example:
+
+```c
+int x = 10;
+x = x + 1; // compiler may optimize multiple accesses to x
+```
+
+**2. Volatile Data Type**
+
+* Declaring a variable as `volatile` prevents the compiler from applying certain optimizations.
+* The value is **always read from memory** whenever it is accessed.
+* Syntax:
+
+```c
+volatile int flag;
+```
+
+**3. When to Use `volatile`**
+
+* **Hardware registers:** Values may change due to external hardware events.
+* **Interrupt service routines (ISR):** Variables modified by ISR and read in the main program.
+* **Multithreaded applications:** Variables shared between threads can change asynchronously.
+
+**4. Example**
+
+```c
+volatile int flag = 0;
+
+while(flag == 0) {
+    // wait for flag to become non-zero
+    // compiler will not optimize this loop
+}
+```
+
+* Without `volatile`, the compiler might **optimize the loop** and assume `flag` never changes, causing an infinite loop.
+
+**5. Key Differences**
+
+| Feature               | Normal Variable | Volatile Variable                  |
+| --------------------- | --------------- | ---------------------------------- |
+| Compiler Optimization | Allowed         | Not allowed                        |
+| Value Changes         | Assumed stable  | May change anytime outside program |
+| Use Case              | General-purpose | Hardware, ISR, shared memory       |
+
+**Extra Notes for Interview:**
+
+* `volatile` does **not make a variable atomic**; for thread safety, you may need `atomic` types.
+* Shows understanding of **compiler behavior, memory access, and embedded systems programming**.
+
+This demonstrates clear knowledge of **volatile vs normal variables**, which is commonly tested in embedded C interviews.
+
+---
+
+16. **Question:** Why should we be careful while using `float` in embedded systems?
+
+**Answer:**
+
+In embedded systems, resources like **memory and processing power** are often limited. Using `float` can introduce several challenges:
+
+**1. Memory Usage**
+
+* A `float` typically occupies **4 bytes**, which is **larger than integer types** (`int`, `char`) commonly used in embedded systems.
+* Excessive use of floats can **increase RAM usage**, which is critical in microcontrollers with limited memory.
+
+**2. Processing Overhead**
+
+* Many microcontrollers **do not have a hardware floating-point unit (FPU)**.
+* Floating-point calculations are performed **in software**, which is **slower and more CPU-intensive** than integer arithmetic.
+
+**3. Precision Issues**
+
+* `float` has **limited precision (\~7 decimal digits)**.
+* In embedded applications, rounding errors can accumulate, causing **unexpected behavior**, especially in control systems or sensors.
+
+**4. Power Consumption**
+
+* Software-based floating-point calculations require **more CPU cycles**, increasing **power consumption**, which is critical for battery-powered embedded devices.
+
+**5. Alternatives**
+
+* Prefer **fixed-point arithmetic** or **integer math** wherever possible to save memory and processing time.
+* Use `float` only when **high precision is essential**.
+
+**Example:**
+
+```c
+int temperature = 36;      // integer representation
+float temp_celsius = 36.6; // requires floating-point calculations
+```
+
+**Extra Notes for Interview:**
+
+* Awareness of these issues demonstrates understanding of **resource constraints, performance optimization, and numerical stability** in embedded systems.
+* Embedded systems often favor **integers over floats** for **speed, memory efficiency, and predictability**.
+
+This answer shows deep knowledge of **practical considerations in embedded C programming**, which interviewers highly value.
+
+
+---
+
 17. Write a program to print the sizes of all primitive data types in C.
+
+---
 18. Why do we use `enum` instead of `#define` in embedded programming?
 19. What happens if you overflow an `unsigned int`? Give example.
 20. Can we use `long double` in embedded systems? Why or why not?
